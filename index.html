@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Student Mental Health Predictor</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="bg-blob blob-1"></div>
+  <div class="bg-blob blob-2"></div>
+
+  <main class="container">
+    <header class="hero">
+      <span class="badge">AI School · Mental Health Model</span>
+      <h1>Student Mental Health <span class="grad">Predictor</span></h1>
+      <p>Tell us about daily habits and social media use to get a predicted mental health score.</p>
+    </header>
+
+    <div class="server-bar">
+      <label for="api-url">API server</label>
+      <input type="url" id="api-url" placeholder="http://10.10.46.96:8501" spellcheck="false" />
+      <button type="button" id="test-btn" class="btn ghost small">Test connection</button>
+      <span id="server-status" class="status" role="status"></span>
+    </div>
+
+    <div class="layout">
+      <!-- FORM -->
+      <form id="predict-form" class="card" novalidate>
+        <div id="global-error" class="alert" role="alert" hidden></div>
+
+        <fieldset>
+          <legend>👤 Profile</legend>
+          <div class="grid">
+            <div class="field">
+              <label for="age">Age</label>
+              <input type="number" id="age" name="age" min="10" max="100" step="1" placeholder="e.g. 20" required />
+              <small class="err" data-for="age"></small>
+            </div>
+            <div class="field">
+              <label for="gender">Gender</label>
+              <select id="gender" name="gender" required>
+                <option value="" disabled selected>Select…</option>
+                <option>Male</option><option>Female</option>
+              </select>
+              <small class="err" data-for="gender"></small>
+            </div>
+            <div class="field">
+              <label for="country">Country</label>
+              <select id="country" name="country" required>
+                <option value="" disabled selected>Select…</option>
+              </select>
+              <small class="err" data-for="country"></small>
+            </div>
+            <div class="field">
+              <label for="academic_level">Academic level</label>
+              <select id="academic_level" name="academic_level" required>
+                <option value="" disabled selected>Select…</option>
+                <option>High School</option><option>Undergraduate</option><option>Graduate</option>
+              </select>
+              <small class="err" data-for="academic_level"></small>
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>📱 Social media</legend>
+          <div class="grid">
+            <div class="field">
+              <label for="most_used_platform">Most used platform</label>
+              <select id="most_used_platform" name="most_used_platform" required>
+                <option value="" disabled selected>Select…</option>
+              </select>
+              <small class="err" data-for="most_used_platform"></small>
+            </div>
+            <div class="field">
+              <label for="purpose_of_use">Purpose of use</label>
+              <select id="purpose_of_use" name="purpose_of_use" required>
+                <option value="" disabled selected>Select…</option>
+                <option>Networking</option><option>Education</option>
+                <option>Entertainment</option><option>News</option>
+              </select>
+              <small class="err" data-for="purpose_of_use"></small>
+            </div>
+            <div class="field">
+              <label for="avg_daily_usage_hours">Daily usage (hours)</label>
+              <input type="number" id="avg_daily_usage_hours" name="avg_daily_usage_hours" min="0" max="24" step="0.1" placeholder="0 – 24" required />
+              <small class="err" data-for="avg_daily_usage_hours"></small>
+            </div>
+            <div class="field">
+              <label for="daily_unlocks">Daily phone unlocks</label>
+              <input type="number" id="daily_unlocks" name="daily_unlocks" min="0" step="1" placeholder="e.g. 60" required />
+              <small class="err" data-for="daily_unlocks"></small>
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>🌿 Lifestyle</legend>
+          <div class="grid">
+            <div class="field">
+              <label for="study_hours">Study hours / day</label>
+              <input type="number" id="study_hours" name="study_hours" min="0" max="24" step="0.1" placeholder="0 – 24" required />
+              <small class="err" data-for="study_hours"></small>
+            </div>
+            <div class="field">
+              <label for="physical_activity_hours">Physical activity (hours)</label>
+              <input type="number" id="physical_activity_hours" name="physical_activity_hours" min="0" max="24" step="0.1" placeholder="0 – 24" required />
+              <small class="err" data-for="physical_activity_hours"></small>
+            </div>
+            <div class="field">
+              <label for="sleep_hours_per_night">Sleep (hours / night)</label>
+              <input type="number" id="sleep_hours_per_night" name="sleep_hours_per_night" min="0" max="24" step="0.1" placeholder="0 – 24" required />
+              <small class="err" data-for="sleep_hours_per_night"></small>
+            </div>
+            <div class="field">
+              <label for="stress_level">Stress level</label>
+              <select id="stress_level" name="stress_level" required>
+                <option value="" disabled selected>Select…</option>
+                <option>Low</option><option>Medium</option><option>High</option><option>Very High</option>
+              </select>
+              <small class="err" data-for="stress_level"></small>
+            </div>
+          </div>
+        </fieldset>
+
+        <div class="actions">
+          <button type="submit" id="submit-btn" class="btn primary">
+            <span class="btn-label">Predict score</span>
+            <span class="spinner" aria-hidden="true"></span>
+          </button>
+          <button type="reset" id="reset-btn" class="btn ghost">Reset</button>
+        </div>
+      </form>
+
+      <!-- RESULT -->
+      <aside class="card result-panel" aria-live="polite">
+        <div id="placeholder" class="placeholder">
+          <div class="ph-icon">🧠</div>
+          <h3>Your result will appear here</h3>
+          <p>Fill in the form and press <strong>Predict score</strong>.</p>
+        </div>
+
+        <div id="loader" class="loader" hidden>
+          <div class="orbit"><span></span><span></span><span></span></div>
+          <p>Analysing your data…</p>
+        </div>
+
+        <div id="result" class="result" hidden>
+          <p class="r-title">Predicted mental health score</p>
+          <div class="gauge">
+            <svg viewBox="0 0 120 120">
+              <circle class="track" cx="60" cy="60" r="52" />
+              <circle class="bar" id="gauge-bar" cx="60" cy="60" r="52" />
+            </svg>
+            <div class="gauge-center">
+              <span id="score-value">0.00</span>
+              <small>out of 10</small>
+            </div>
+          </div>
+          <div id="score-label" class="score-label"></div>
+          <p id="score-msg" class="score-msg"></p>
+          <p class="disclaimer">Statistical model estimate for educational use — not a medical diagnosis.</p>
+        </div>
+      </aside>
+    </div>
+    <footer class="server-bar">
+      <label for="api-url">API server</label>
+      <input type="url" id="api-url" placeholder="http://127.0.0.1:8000" spellcheck="false" />
+      <button type="button" id="api-check" class="btn ghost small">Test connection</button>
+      <span id="api-status" class="api-status"></span>
+    </footer>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>

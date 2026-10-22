@@ -1,1 +1,1 @@
-﻿# Student_Mental-Health-Score
+﻿# Student-Mental-Health-Score
